@@ -75,7 +75,7 @@ int main()
     writeCSVFile(skew, skew1, skew2, 100, "skew1", "skew2");
 
     // hr
-    heartRate(trough1, 51);
+    heartRate(peak1, 51);
 
     return 0;
 }
