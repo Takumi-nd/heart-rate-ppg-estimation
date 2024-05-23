@@ -38,8 +38,6 @@ int main()
 
     char *readPath = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\record\\raw_data_7_5_2024.csv";
     char *filterPath = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\c_data\\filtered.csv";
-    char *squaringPath = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\c_data\\enhancing.csv";
-    char *maPeakPath = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\c_data\\maPeak.csv";
     char *maBeatPath = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\c_data\\maBeat.csv";
     char *peak = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\c_data\\peak.csv";
     char *trough = "C:\\Users\\Administration\\Workspace\\PPG-thesis\\Python\\c_data\\trough.csv";
