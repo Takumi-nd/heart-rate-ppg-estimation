@@ -131,6 +131,7 @@ void dcRemove(int signal[], int signalSize) {
         sum += signal[i];
     }
     float mean = sum / signalSize;
+    printf("%f\n", mean);
 
     for (int i = 0; i < signalSize; i++) {
         signal[i] -= mean;
@@ -147,7 +148,7 @@ void filter(int signal[], float b[], float a[], float out[], int signalSize, int
                 sum += b[j] * signal[i-j];
         }
 
-        for (int j = 0; j < aSize; j++) {
+        for (int j = 1; j < aSize; j++) {
             if (i-j>=0)
                 sum -= a[j] * out[i-j];
         }
