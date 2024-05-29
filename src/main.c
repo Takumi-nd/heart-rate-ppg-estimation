@@ -16,12 +16,12 @@ int findMax(float signal[], int startIDX, int endIDX);
 int findMin(float signal[], int startIDX, int endIDX);
 void getROI(float signal[], float movingAvg[], int startPos[], int endPos[], int signalSize, int *startIDX, int *endIDX);
 void detectPeakTroughAdaptiveThreshold(float signal[], float movingAvg[], int peak[], int trough[], int signalSize);
-void heartRate(int peak[], int numOfPeak);
+void heartRate(int peak[], float skew[], int numOfPeak);
 
 int main()
 {
-    float b[5] = {0.03657484f, 0.0f, -0.07314967f, 0.0f, 0.03657484f};
-    float a[5] = {1.0f, -3.33661174f, 4.22598625f, -2.42581874f, 0.53719462f};
+    float b[5] = {0.05017146f, 0.0f, -0.10034292f, 0.0f, 0.05017146f};
+    float a[5] = {1.0f, -3.16879895f, 3.84903025f, -2.15218785f, 0.47480076f};
     float ir1_filtered[1000] = {0.0f};
     float ir2_filtered[1000] = {0.0f};
     float mab1[1000] = {0.0f};
@@ -56,8 +56,8 @@ int main()
     filter(ir2, b, a, ir2_filtered, signalSize, 5, 5);
     writeCSVFile(filterPath, ir1_filtered, ir2_filtered, signalSize, "ir1_filtered", "ir2_filtered");
     // moving avg
-    movingAvg(ir1_filtered, mab1, signalSize, 65);
-    movingAvg(ir2_filtered , mab2, signalSize, 65);
+    movingAvg(ir1_filtered, mab1, signalSize, 75);
+    movingAvg(ir2_filtered , mab2, signalSize, 75);
     writeCSVFile(maBeatPath, mab1, mab2, signalSize, "mab_ir1", "mab_ir2");
 
     // find peak;
@@ -73,7 +73,8 @@ int main()
     writeCSVFile(skew, skew1, skew2, 100, "skew1", "skew2");
 
     // hr
-    heartRate(peak1, 51);
+    heartRate(trough1, skew1, 49);
+    heartRate(trough2, skew2, 48);
 
     return 0;
 }
@@ -255,7 +256,7 @@ void detectPeakTroughAdaptiveThreshold(float signal[], float movingAvg[], int pe
     int startIdx, endIdx;
     getROI(signal, movingAvg, startROI, endROI, signalSize, &lenStartROI, &lenEndROI);
 
-    printf("%d, \n", lenStartROI);
+    //printf("%d, \n", lenStartROI);
 
     for (int i = 0; i < lenStartROI; i++) {
         startIdx = startROI[i];
@@ -268,13 +269,18 @@ void detectPeakTroughAdaptiveThreshold(float signal[], float movingAvg[], int pe
     }
 }
 
-void heartRate(int peak[], int len) {
+void heartRate(int peak[], float skew[], int len) {
     int sumPeakInterval = 0;
     float heartRate = 0.0f;
-    for (int i = 1; i < len - 1; i++) {
-        sumPeakInterval += (peak[i+1] - peak[i]);
+    printf("\n----------\n");
+    for (int i = 0; i < len; i++) {
+        if (skew[i] >= 0 && skew[i] <= 1) {
+            sumPeakInterval = (peak[i+1] - peak[i]);
+            heartRate = (25.0f * 60.0f) / (sumPeakInterval);
+            printf("%f\n", heartRate);
+        } else {
+            printf("Bad Beat!\n");
+        }
     }
-    sumPeakInterval /= len;
-    heartRate = (25.0f * 60.0f) / (sumPeakInterval);
-    printf("%f\n", heartRate);
+    //sumPeakInterval /= len;
 }
